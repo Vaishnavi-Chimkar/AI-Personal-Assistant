@@ -20,32 +20,32 @@ def helloworld():
 @app.route("/ask",methods=["POST"])
 def ask():
     question = request.form.get("question")
-    response = client.responses.create(
-        input= [
+    response = client.chat.completions.create(
+        messages=[
             {"role":"system","content":"Act like a helpful personal assistant"},
             {"role":"user","content":question}
         ],
-        model="openai/gpt-oss-20b",
+        model="llama3-8b-8192",
         temperature=0.7,
-        max_output_tokens=512
+        max_tokens=512
     )
-    answer = response.output_text.strip()
+    answer = response.choices[0].message.content.strip()
     return jsonify({"response":answer}),200
 @app.route("/summarize",methods=["POST"])
 def summarize():
     email_text = request.form.get("email")
     prompt = f"summarize the following email in 2-3 sentences: {email_text}"
         
-    response = client.responses.create(
-        input= [
+    response = client.chat.completions.create(
+        messages=[
             {"role":"system","content":"Act like a expert email assistant"},
             {"role":"user","content":prompt}
         ],
-        model="openai/gpt-oss-20b",
+        model="llama3-8b-8192",
         temperature=0.3,
-        max_output_tokens=512
+        max_tokens=512
     )
-    Summary = response.output_text.strip()
+    Summary = response.choices[0].message.content.strip()
     return jsonify({"response":Summary}),200
 
 if __name__=="__main__":
